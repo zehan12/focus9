@@ -3,59 +3,74 @@ import { useState } from "react"
 import { Eye, EyeOff, Lock, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { bgImgUrl } from "@/utils/images"
+import { login } from "@/store/auth/slice"
+import { useNavigate } from "react-router"
+import { useAppDispatch } from "@/hooks"
+import { loginUser } from "@/services"
+import { ROUTES } from "@/constants"
 
 export const LoginPage = () => {
-    const [showPassword, setShowPassword] = useState(false)
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         username: "",
         password: "",
-        rememberMe: false,
-    })
+        rememberMe: false
+    });
     const [errors, setErrors] = useState({
         username: "",
         password: "",
-    })
+    });
+    const [loading, setLoading] = useState(false);
+    const [apiError, setApiError] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target
+        const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: type === "checkbox" ? checked : value,
-        })
+            [name]: value,
+        });
 
         if (errors[name as keyof typeof errors]) {
-            setErrors({
-                ...errors,
-                [name]: "",
-            })
+            setErrors({ ...errors, [name]: "" });
         }
-    }
+    };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
 
         const newErrors = {
             username: formData.username ? "" : "Username is required",
             password: formData.password ? "" : "Password is required",
-        }
-
-        setErrors(newErrors)
+        };
+        setErrors(newErrors);
 
         if (!newErrors.username && !newErrors.password) {
-            console.log("Login submitted:", formData)
+            try {
+                setLoading(true);
+                const response = await loginUser(formData.username, formData.password);
+                dispatch(login(response));
+                navigate(ROUTES.HOME);
+            } catch (error) {
+                setApiError(error as string);
+            } finally {
+                setLoading(false);
+            }
         }
-    }
+    };
 
     const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword)
-    }
+        setShowPassword(!showPassword);
+    };
 
     return (
         <div
             style={{
                 backgroundImage: `url(/images/background/${bgImgUrl}.jpg)`,
             }}
-            className={cn("min-h-screen flex items-center justify-center",
+            className={cn("min-h-screen w-screen flex items-center justify-center",
                 "bg-cover bg-center bg-no-repeat"
             )}>
             <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-lg">
@@ -67,6 +82,19 @@ export const LoginPage = () => {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-800">Focus 9 ERP</h1>
                     <p className="text-gray-600 mt-1">Login to your account</p>
+                    <div className="flex flex-col items-start gap-1 text-sm -mb-8 py-2">
+                        <h2 className="text-black font-normal text-xs uppercase tracking-wider">Demo Credentials</h2>
+                        <div className="flex gap-4 bg-gray-50/50 px-3 py-2 rounded-md">
+                            <span className="text-gray-600">
+                                <span className="font-medium">Username:</span>
+                                <code className="ml-1.5 font-mono text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded">admin</code>
+                            </span>
+                            <span className="text-gray-600">
+                                <span className="font-medium">Password:</span>
+                                <code className="ml-1.5 font-mono text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded">admin</code>
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -145,10 +173,12 @@ export const LoginPage = () => {
                     <div>
                         <button
                             type="submit"
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
+                            disabled={loading}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded"
                         >
-                            Login
+                            {loading ? "Logging in..." : "Login"}
                         </button>
+                        {apiError && <p className="text-red-500 text-xs mt-2">{apiError}</p>}
                     </div>
                 </form>
 

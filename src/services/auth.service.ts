@@ -1,4 +1,4 @@
-export const login = async (username: string, password: string) => {
+export const loginUser = async (username: string, password: string) => {
     return new Promise<{ user: string; token: string }>((resolve, reject) => {
         setTimeout(() => {
             if (username === "admin" && password === "admin") {
