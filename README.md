@@ -1,54 +1,81 @@
-# React + TypeScript + Vite
+# Focus 9 ERP System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Focus 9 ERP is a comprehensive Enterprise Resource Planning system designed to streamline business operations across various departments. This modern web-based application provides modules for inventory management, procurement, sales, finance, and more, with a focus on user-friendly interfaces and efficient workflows.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+### Core Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **User Authentication**: Secure login system with role-based access control
+- **Dashboard**: Centralized overview of key business metrics
+- **Navigation**: Intuitive sidebar navigation with module categorization
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Procurement Module
+  - Purchase Orders Standard 
+
+
+## Tech Stack
+
+- **Frontend**: React.js, Tailwind CSS
+- **State Management**: Redux Toolkit
+- **UI Components**: Shadcn UI, Lucide React (icons)
+
+## Installation
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Setup
+
+1. Clone the repository:
+  ```bash
+  git clone https://github.com/zehan12/focus9.git
+  cd focus9-erp
+  ```
+
+2. Install dependencies:
+  ```
+  pnpm install
+  ```
+
+3. Run the development server:
+```
+  pnpm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+4. Open [http://localhost:5173](http://localhost:5173) in your browser to see the application.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usage Guide
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Authentication
+
+- Use the login page to access the system
+- Default credentials: Username: `admin`, Password: `admin`
+
+### Navigation
+
+- Use the sidebar to navigate between different modules
+- The sidebar is organized by department (Inventory, Finance, etc.)
+- Each department has sub-modules accessible via dropdown
+
+### Purchase Orders
+
+1. Navigate to Inventory → Transactions → Purchases → Purchase Orders Standard
+2. Click "New" to create a new Purchase Order
+3. Fill in the required fields:
+   - Document No. (auto-generated)
+   - Vendor Account (select from dropdown)
+   - Date
+   - Add line items with Item, Units, Quantity, and Rate
+4. Save the Purchase Order
+5. Use the action buttons to:
+   - Submit for approval
+   - Print
+   - Delete
+   - Suspend
+
+---
