@@ -1,11 +1,33 @@
-import { Grid, Search, Bell, Clock, User, ChevronRight } from "lucide-react"
+"use client"
+
+import type React from "react"
+
+import { Grid, Search, Bell, Clock, User, ChevronRight, LogOut, Settings, UserCircle } from "lucide-react"
 import { useState } from "react"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useNavigate } from "react-router"
+import { ROUTES } from "@/constants"
+import { useDispatch } from "react-redux"
+import { logout } from "@/store/auth/slice"
 
 export const Header = () => {
+    const dispatch = useDispatch();
     const [searchQuery, setSearchQuery] = useState("")
+    const navigate = useNavigate()
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value)
+    }
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate(ROUTES.LOGIN);
     }
 
     return (
@@ -46,13 +68,36 @@ export const Header = () => {
                 <button className="p-1 text-gray-600 hover:text-gray-800">
                     <Clock size={20} />
                 </button>
-                <div className="flex items-center space-x-1">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700">
-                        <User size={16} />
-                    </div>
-                    <span className="text-sm font-medium">SU</span>
-                    <ChevronRight size={16} className="text-gray-500" />
-                </div>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="flex items-center space-x-1 hover:bg-gray-100 rounded-md p-1 transition-colors">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700">
+                                <User size={16} />
+                            </div>
+                            <span className="text-sm font-medium">Admin</span>
+                            <ChevronRight size={16} className="text-gray-500" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <div className="px-2 py-1.5 text-sm font-medium">User Account</div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="cursor-pointer">
+                            <UserCircle className="mr-2 h-4 w-4" />
+                            <span>Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600" onClick={handleLogout}>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Logout</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
                 <div className="flex items-center">
                     <div className="text-orange-500 mr-1">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,5 +111,6 @@ export const Header = () => {
                     </div>
                 </div>
             </div>
-        </header>)
+        </header>
+    )
 }
